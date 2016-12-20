@@ -116,10 +116,10 @@ log4j.main = {
            'org.hibernate',
            'net.sf.ehcache.hibernate'
 
-    debug 'org.springframework.messaging'
+//    debug 'org.springframework.messaging'
     debug 'org.springframework.web'
     trace 'org.springframework.web.socket'
-    debug 'org.springframework.integration'
+//    debug 'org.springframework.integration'
     trace 'org.springframework.web.servlet.DispatcherServlet'
     trace 'org.springframework.web.servlet.FrameworkServlet'
 }

@@ -1,4 +1,5 @@
 import demo.spring.integration.websocket.config.ApplicationConfig
+import demo.spring.integration.websocket.config.ClientConfig
 import demo.spring.integration.websocket.config.ClientWebSocketConfig
 import demo.spring.integration.websocket.config.ServerWebSocketConfig
 import org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter
@@ -9,6 +10,7 @@ beans = {
     configureWebSocket()
 
     applicationConfig(ApplicationConfig) {}
+    clientConfig(ClientConfig) {}
 }
 
 configureWebSocket = {
@@ -16,8 +18,8 @@ configureWebSocket = {
     httpRequestHandlerAdapter(HttpRequestHandlerAdapter) {}
 
     // server web-socket container
-    serverWebSocketConfig(ServerWebSocketConfig)
+    serverWebSocketConfig(ServerWebSocketConfig) {}
 
     // client
-    clientWebSocketConfig(ClientWebSocketConfig)
+    clientWebSocketConfig(ClientWebSocketConfig) {}
 }

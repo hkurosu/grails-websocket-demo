@@ -53,7 +53,7 @@ grails.project.dependency.resolution = {
         test "org.grails:grails-datastore-test-support:1.0.2-grails-2.4"
 
         def springVersion = '4.1.8.RELEASE'
-        def springIntegrationVersion = '4.1.9.RELEASE'
+        def springIntegrationVersion = '4.3.5.RELEASE'
 
         compile("org.springframework:spring-messaging:$springVersion") {
         }
