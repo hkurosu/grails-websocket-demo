@@ -36,6 +36,9 @@ class ApplicationConfig {
     @Autowired
     ServerWebSocketContainer serverWebSocketContainer
 
+    @Autowired
+    WebSocketOutboundMessageHandler webSocketOutboundAdapter
+
     @Bean
     @InboundChannelAdapter(value = "splitChannel", poller = @Poller(fixedDelay = "1000", maxMessagesPerPoll = "1"))
     MessageSource<?> webSocketSessionsMessageSource() {
@@ -87,17 +90,13 @@ class ApplicationConfig {
 
     @Bean
     MessageChannel sendTimeChannel() {
-        new PublishSubscribeChannel()
+        PublishSubscribeChannel channel = new PublishSubscribeChannel()
+        channel.subscribe(webSocketOutboundAdapter)
+        channel.subscribe(loggingChannelAdapter())
+        channel
     }
 
     @Bean
-    @ServiceActivator(inputChannel = "sendTimeChannel")
-    MessageHandler webSocketOutboundAdapter() {
-        new WebSocketOutboundMessageHandler(serverWebSocketContainer)
-    }
-
-    @Bean
-    @ServiceActivator(inputChannel = "sendTimeChannel")
     MessageHandler loggingChannelAdapter() {
         LoggingHandler loggingHandler = new LoggingHandler("info")
         loggingHandler.logExpressionString = "'The time ' + payload + ' has been sent to the WebSocketSession ' + headers.simpSessionId"
