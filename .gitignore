@@ -1,0 +1,5 @@
+/.idea/
+/.slcache/
+/target/
+*.iml
+.asscache
