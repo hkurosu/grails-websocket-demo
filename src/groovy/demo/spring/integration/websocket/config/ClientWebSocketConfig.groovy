@@ -1,5 +1,6 @@
 package demo.spring.integration.websocket.config
 
+import groovy.transform.CompileStatic
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.integration.config.EnableIntegration
@@ -11,6 +12,7 @@ import org.springframework.web.socket.sockjs.client.SockJsClient
 import org.springframework.web.socket.sockjs.client.Transport
 import org.springframework.web.socket.sockjs.client.WebSocketTransport
 
+@CompileStatic
 @Configuration
 @EnableIntegration
 class ClientWebSocketConfig {
@@ -33,6 +35,6 @@ class ClientWebSocketConfig {
 
     @Bean
     ClientWebSocketContainer clientWebSocketContainer() {
-        new ClientWebSocketContainer(webSocketClient(), 'ws://localhost:8080/time/websocket')
+        new ClientWebSocketContainer(webSocketClient(), 'ws://localhost:8080/grails-websocket-demo/time')
     }
 }

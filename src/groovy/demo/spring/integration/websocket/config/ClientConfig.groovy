@@ -1,5 +1,6 @@
 package demo.spring.integration.websocket.config
 
+import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Bean
@@ -13,6 +14,7 @@ import org.springframework.integration.websocket.inbound.WebSocketInboundChannel
 import org.springframework.messaging.MessageChannel
 import org.springframework.messaging.MessageHandler
 
+@CompileStatic
 @Configuration
 class ClientConfig {
 
@@ -20,23 +22,23 @@ class ClientConfig {
     ClientWebSocketContainer clientWebSocketContainer
 
     @Bean
-    MessageChannel webSocketInputChannel() {
+    MessageChannel clientWebSocketInputChannel() {
         new DirectChannel()
     }
 
     @Bean
-    @ServiceActivator(inputChannel = "webSocketInputChannel")
+    @ServiceActivator(inputChannel = "clientWebSocketInputChannel")
     MessageHandler clientLoggingChannelAdapter() {
         LoggingHandler loggingHandler = new LoggingHandler("info")
-        loggingHandler.setExpression("'The time ' + payload + ' has been sent to the WebSocketSession ' + headers.simpSessionId")
+        loggingHandler.logExpressionString = "'The WebSocketClient received: ' + payload"
         loggingHandler
     }
 
     @Bean
-    @ServiceActivator
-    WebSocketInboundChannelAdapter websocketInboundChannelAdapter() {
+    WebSocketInboundChannelAdapter webSocketInboundChannelAdapter() {
         WebSocketInboundChannelAdapter adapter = new WebSocketInboundChannelAdapter(clientWebSocketContainer)
-        adapter.outputChannel = webSocketInputChannel()
+        adapter.outputChannel = clientWebSocketInputChannel()
+        adapter.autoStartup = false
         adapter
     }
 }

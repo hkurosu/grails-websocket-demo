@@ -1,5 +1,6 @@
 package demo.spring.integration.websocket.config
 
+import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -28,6 +29,7 @@ import org.springframework.messaging.support.GenericMessage
 import java.text.DateFormat
 import java.util.concurrent.Executors
 
+@CompileStatic
 @Configuration
 class ApplicationConfig {
 
@@ -83,12 +85,10 @@ class ApplicationConfig {
         }
     }
 
-
     @Bean
     MessageChannel sendTimeChannel() {
         new PublishSubscribeChannel()
     }
-
 
     @Bean
     @ServiceActivator(inputChannel = "sendTimeChannel")
@@ -100,7 +100,7 @@ class ApplicationConfig {
     @ServiceActivator(inputChannel = "sendTimeChannel")
     MessageHandler loggingChannelAdapter() {
         LoggingHandler loggingHandler = new LoggingHandler("info")
-        loggingHandler.setExpression("'The time ' + payload + ' has been sent to the WebSocketSession ' + headers.simpSessionId")
+        loggingHandler.logExpressionString = "'The time ' + payload + ' has been sent to the WebSocketSession ' + headers.simpSessionId"
         loggingHandler
     }
 

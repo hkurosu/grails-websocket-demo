@@ -118,8 +118,10 @@ log4j.main = {
 
 //    debug 'org.springframework.messaging'
     debug 'org.springframework.web'
-    trace 'org.springframework.web.socket'
-//    debug 'org.springframework.integration'
+    debug 'org.springframework.web.socket'
+    info 'org.springframework.integration'
+    debug 'org.springframework.integration.websocket'
+//    info 'org.springframework.integration.handler.LoggingHandler'
     trace 'org.springframework.web.servlet.DispatcherServlet'
     trace 'org.springframework.web.servlet.FrameworkServlet'
 }
