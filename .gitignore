@@ -1,5 +1,6 @@
-/.idea/
-/.slcache/
-/target/
+.idea/
+.slcache/
+target/
 *.iml
 .asscache
+*~

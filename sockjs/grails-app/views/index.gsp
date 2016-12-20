@@ -5,7 +5,7 @@
     <asset:javascript src="sockjs.js" />
     <script type="text/javascript">
 
-        var sock = new SockJS('http://localhost:8080/grails-spring-websocket/time');
+        var sock = new SockJS('http://localhost:8080/sockjs/time');
         sock.onopen = function () {
             document.getElementById('time').innerHTML = 'Connecting...';
         };

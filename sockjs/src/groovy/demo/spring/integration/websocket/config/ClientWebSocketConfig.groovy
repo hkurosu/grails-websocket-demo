@@ -35,6 +35,6 @@ class ClientWebSocketConfig {
 
     @Bean
     ClientWebSocketContainer clientWebSocketContainer() {
-        new ClientWebSocketContainer(webSocketClient(), 'ws://localhost:8080/grails-websocket-demo/time')
+        new ClientWebSocketContainer(webSocketClient(), 'ws://localhost:8080/sockjs/time')
     }
 }
