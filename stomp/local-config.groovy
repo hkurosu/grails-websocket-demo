@@ -1,1 +1,8 @@
-//grails.plugin.springwebsocket.messageBroker.userDestinationPrefix = "/app/"
+grails {
+    plugin {
+        springwebsocket {
+            dispatcherServlet.additionalMappings = ["/broker/*"]
+            stompEndpoints = [["/broker"]]
+        }
+    }
+}
