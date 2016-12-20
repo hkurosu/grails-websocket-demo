@@ -3,8 +3,11 @@ package demo.spring.integration.websocket.config
 import groovy.transform.CompileStatic
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.integration.channel.DirectChannel
 import org.springframework.integration.config.EnableIntegration
 import org.springframework.integration.websocket.ClientWebSocketContainer
+import org.springframework.integration.websocket.inbound.WebSocketInboundChannelAdapter
+import org.springframework.messaging.MessageChannel
 import org.springframework.web.socket.client.WebSocketClient
 import org.springframework.web.socket.client.standard.StandardWebSocketClient
 import org.springframework.web.socket.sockjs.client.RestTemplateXhrTransport
@@ -36,5 +39,18 @@ class ClientWebSocketConfig {
     @Bean
     ClientWebSocketContainer clientWebSocketContainer() {
         new ClientWebSocketContainer(webSocketClient(), 'ws://localhost:8080/sockjs/time')
+    }
+
+    @Bean
+    MessageChannel clientWebSocketInputChannel() {
+        new DirectChannel()
+    }
+
+    @Bean
+    WebSocketInboundChannelAdapter webSocketInboundChannelAdapter() {
+        WebSocketInboundChannelAdapter adapter = new WebSocketInboundChannelAdapter(clientWebSocketContainer())
+        adapter.outputChannel = clientWebSocketInputChannel()
+        adapter.autoStartup = false
+        adapter
     }
 }

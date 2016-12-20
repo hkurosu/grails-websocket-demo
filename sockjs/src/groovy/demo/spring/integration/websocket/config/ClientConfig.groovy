@@ -22,11 +22,6 @@ class ClientConfig {
     ClientWebSocketContainer clientWebSocketContainer
 
     @Bean
-    MessageChannel clientWebSocketInputChannel() {
-        new DirectChannel()
-    }
-
-    @Bean
     @ServiceActivator(inputChannel = "clientWebSocketInputChannel")
     MessageHandler clientLoggingChannelAdapter() {
         LoggingHandler loggingHandler = new LoggingHandler("info")
@@ -34,11 +29,4 @@ class ClientConfig {
         loggingHandler
     }
 
-    @Bean
-    WebSocketInboundChannelAdapter webSocketInboundChannelAdapter() {
-        WebSocketInboundChannelAdapter adapter = new WebSocketInboundChannelAdapter(clientWebSocketContainer)
-        adapter.outputChannel = clientWebSocketInputChannel()
-        adapter.autoStartup = false
-        adapter
-    }
 }
