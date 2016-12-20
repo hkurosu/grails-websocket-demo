@@ -1,0 +1,1 @@
+//grails.plugin.springwebsocket.messageBroker.userDestinationPrefix = "/app/"
