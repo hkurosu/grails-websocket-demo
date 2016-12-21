@@ -1,3 +1,7 @@
+<%@ page import="grails.plugin.springwebsocket.ConfigUtils" %>
+<%
+    def config = ConfigUtils.getSpringWebsocketConfig(grailsApplication)
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,9 +12,13 @@
 
     <script type="text/javascript">
         $(function() {
+            <g:if test="${config.messageBroker.useSockJs}">
             // toggle socket to switch between SockJS and native WebSocket
-            // var socket = new SockJS("${createLink(uri: '/broker')}");
-            var socket = new WebSocket("ws://localhost:8080/stomp/broker/websocket");
+            var socket = new SockJS("${createLink(uri: '/broker')}");
+            </g:if>
+            <g:else>
+            var socket = new WebSocket("ws://localhost:8080/stomp/broker");
+            </g:else>
             var client = Stomp.over(socket);
 
             client.connect({}, function() {
