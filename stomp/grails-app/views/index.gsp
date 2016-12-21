@@ -8,18 +8,20 @@
 
     <script type="text/javascript">
         $(function() {
-            var socket = new SockJS("${createLink(uri: '/broker')}");
+            // toggle socket to switch between SockJS and native WebSocket
+            // var socket = new SockJS("${createLink(uri: '/broker')}");
+            var socket = new WebSocket("ws://localhost:8080/stomp/broker/websocket");
             var client = Stomp.over(socket);
 
             client.connect({}, function() {
                 client.subscribe("/topic/hello", function(message) {
-//                    $("#helloDiv").append(message.body);
                     $("#helloDiv").text(message.body);
                 });
             });
 
             $("#helloButton").click(function() {
                 client.send("/app/hello", {}, JSON.stringify("world"));
+//                client.send("/topic/hello", {}, JSON.stringify("world"));
             });
         });
     </script>

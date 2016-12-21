@@ -4,8 +4,9 @@
     <title>Time over WebSocket</title>
     <asset:javascript src="sockjs.js" />
     <script type="text/javascript">
-
+        // toggle next line to switch SockJS and native WebSocket API
         var sock = new SockJS('http://localhost:8080/sockjs/time');
+        //var sock = new WebSocket('ws://localhost:8080/sockjs/time/websocket');
         sock.onopen = function () {
             document.getElementById('time').innerHTML = 'Connecting...';
         };

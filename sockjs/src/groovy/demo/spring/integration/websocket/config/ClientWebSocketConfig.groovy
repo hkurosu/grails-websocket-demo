@@ -7,6 +7,7 @@ import org.springframework.integration.channel.DirectChannel
 import org.springframework.integration.config.EnableIntegration
 import org.springframework.integration.websocket.ClientWebSocketContainer
 import org.springframework.integration.websocket.inbound.WebSocketInboundChannelAdapter
+import org.springframework.integration.websocket.outbound.WebSocketOutboundMessageHandler
 import org.springframework.messaging.MessageChannel
 import org.springframework.web.socket.client.WebSocketClient
 import org.springframework.web.socket.client.standard.StandardWebSocketClient
@@ -47,10 +48,15 @@ class ClientWebSocketConfig {
     }
 
     @Bean
-    WebSocketInboundChannelAdapter webSocketInboundChannelAdapter() {
+    WebSocketInboundChannelAdapter clientWebSocketInboundChannelAdapter() {
         WebSocketInboundChannelAdapter adapter = new WebSocketInboundChannelAdapter(clientWebSocketContainer())
         adapter.outputChannel = clientWebSocketInputChannel()
         adapter.autoStartup = false
         adapter
+    }
+
+    @Bean
+    WebSocketOutboundMessageHandler clientWebSocketOutboundAdapter() {
+        new WebSocketOutboundMessageHandler(clientWebSocketContainer())
     }
 }
