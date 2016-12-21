@@ -24,29 +24,37 @@
         var monitoring = "/notify/*";
 
         var subscribeCallback = function(message) {
-            $("#messageDiv").text(message.headers.destination);
+            $('#messageTable tr:last').after('<tr><td>'+message.headers['message-id']+'</td><td>'+message.headers.destination+'</td></tr>')
             message.ack();
         }
 
         client.connect({}, function() {
-            $("#messageDiv").text("Monitoring '" + monitoring + "' ...");
+            $("#messageDiv").text("Monitoring '" + monitoring + "'");
             client.subscribe("/topic" + monitoring, subscribeCallback, {ack: 'client'});
         });
     });
     </script>
+
+    <style>
+    table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+    #messageDiv {
+        margin: auto;
+        font-size: 200%;
+        text-align: center;
+        width: 100%;
+    }
+    </style>
 </head>
 
 <body style="margin: 0">
 <noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript!
 WebSocket relies on Javascript being enabled. Please enable Javascript and reload this page!</h2></noscript>
-<div id="messageDiv"
-     style="position: absolute;
-     bottom: 0;
-     font-size: 200%;
-     height: 200px;
-     margin: auto;
-     text-align: center;
-     top: 0;
-     width: 100%;">Starting...</div>
+<div id="messageDiv">Starting...</div>
+<table id="messageTable" style="width:100%">
+    <tr><th style="width:20%;">ID</th><th>Destination</th></tr>
+</table>
 </body>
 </html>
