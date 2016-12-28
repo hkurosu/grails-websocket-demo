@@ -1,8 +1,22 @@
 package demo.websocket
 
-class EchoController {
+import groovy.util.logging.Slf4j
+import org.springframework.messaging.handler.annotation.MessageMapping
+import org.springframework.messaging.simp.annotation.SendToUser
+import org.springframework.messaging.simp.annotation.SubscribeMapping
+
+@Slf4j
+class HealthController {
 
     def index() {
-        render 'OK'
+        log.debug("HTTP /health")
+        render(text: 'OK', contentType: 'text/plain', encoding: 'UTF-8')
+    }
+
+    @MessageMapping('/health')
+    @SendToUser
+    protected String handleMessage() {
+        log.debug("STOMP /health")
+        'OK'
     }
 }
