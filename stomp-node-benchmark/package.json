@@ -2,9 +2,9 @@
   "name": "stomp-node-benchmark",
   "version": "0.0.0",
   "dependencies": {
-    "webworker-threads" : "",
-    "minimist"          : "",
-    "stompjs"           : "",
-    "promise"           : ""
+    "webworker-threads" : "*",
+    "minimist"          : "*",
+    "stompjs"           : "*",
+    "promise"           : "*"
   }
 }
