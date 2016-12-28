@@ -1,11 +1,10 @@
-var argv = require('minimist')(process.argv.slice(2), {default: {n:100,t:10}});
-var requests = argv.n;
-var timeLimit = argv.t;
+var utils = require('./utils.js');
+var args = utils.parseArgs();
 
 var Stomp = require('stompjs');
 var client = Stomp.overWS("ws://localhost:8080/stomp/broker");
 
-if (argv.d) {
+if (args.debug) {
     client.debug = function (message) {
         console.log(message);
     }
@@ -18,35 +17,41 @@ var connect = new Promise(function(resolve, reject) {
 });
 
 var running = 0;
+var sent = 0;
 var received = 0;
 
+var startTime;
+
 var subscribe = function() {
-    client.subscribe('/user/queue/health', function (message) {
-        // console.log('Received: ' + message.body);
-        ++received;
-        --running;
-        // message.ack();
-    }, {ack: 'client'});
-    // console.log('Subscribing /user/queue/health');
+    client.subscribe('/user/queue/health', receive, {ack: 'client'});
 };
 
-var startTime;
+var receive = function() {
+    ++received;
+    --running;
+};
 
 var send = function(n) {
     startTime = new Date();
     console.log('[' + startTime.toISOString() + '] sending ' + n + ' times.');
-    for (var i = 0; i < n; ++i) {
-        client.send('/app/health', {}, 'Hello');
-        // console.log('Sent Hello');
-        ++running;
-    }
+    (function sendRequest() {
+        if (sent < args.requests) {
+            if (running <= args.concurrency) {
+                client.send('/app/health', {}, 'Hello');
+                ++running;
+                ++sent;
+            }
+            setImmediate(sendRequest);
+        }
+    })();
 };
 
-var receive = function(startTime) {
+var end = function(startTime) {
     (function check() {
         var now = new Date();
-        if (running <= 0 || startTime.getTime() + timeLimit * 1000 < now.getTime()) {
-            require('./utils.js').logResult(startTime, now, requests, received);
+        if (running <= 0 || startTime.getTime() + args.timeLimit * 1000 < now.getTime()) {
+            args.received = received;
+            utils.logResult(startTime, now, args);
             client.disconnect();
         } else {
             setImmediate(check);
@@ -58,9 +63,9 @@ connect                  // connect()
     .then(function() {   // subscribe()
         subscribe(); 
     }).then(function() { // send() messages
-        send(requests);
+        send(args.requests);
     }).then(function() { // wait for all subscription messages
-        receive(startTime);
+        end(startTime);
     }
 );
 

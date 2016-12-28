@@ -28,11 +28,15 @@ for (var i = 0; i < concurrency; ++i) {
 function buildCmdLine(opts) {
     cmd = 'node ' + opts.s;
     Object.keys(opts).forEach(function (key) {
-        if (key == '_')
+        if (key == '_') {
             return;
-        cmd += ' -' + key;
-        if (opts[key] && opts[key] !== true) {
-            cmd += ' ' + opts[key];
+        } else if (key == 'c') {
+            cmd += ' -c 1';
+        } else {
+            cmd += ' -' + key;
+            if (opts[key] && opts[key] !== true) {
+                cmd += ' ' + opts[key];
+            }
         }
     });
     return cmd;

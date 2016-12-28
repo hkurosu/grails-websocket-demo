@@ -1,15 +1,13 @@
-var argv = require('minimist')(process.argv.slice(2), {default: {n:100,t:10}});
-var requests = argv.n;
-var timeLimit = argv.t;
-var blocking = argv.b;
-var debug = argv.d;
+var utils = require('./utils.js');
+var args = utils.parseArgs();
 
 var request = require('request');
-if (debug) {
+if (args.debug) {
     request.debug = true;
 }
 
 var running = 0;
+var sent = 0;
 var received = 0;
 
 var startTime;
@@ -26,22 +24,29 @@ var send = function(n) {
         method: 'POST',
         body: 'Hello'
     };
-    for (var i = 0; i < n; ++i) {
-        ++running;
-        request(opts, callback);
-    }
+    (function sendRequest() {
+        if (sent < args.requests) {
+            if (running <= args.concurrency) {
+                request(opts, callback);
+                ++running;
+                ++sent;
+            }
+            setImmediate(sendRequest);
+        }
+    })();
 };
 
 var end = function() {
     (function check() {
         var now = new Date();
-        if (running <= 0 || startTime.getTime() + timeLimit * 1000 < now.getTime()) {
-            require('./utils.js').logResult(startTime, now, requests, received);
+        if (running <= 0 || startTime.getTime() + args.timeLimit * 1000 < now.getTime()) {
+            args.received = received;
+            utils.logResult(startTime, now, args);
         } else {
             setImmediate(check);
         }
     })();
 }
 
-send(requests);
+send(args.requests);
 end();
