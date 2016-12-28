@@ -1,6 +1,6 @@
-var argv = require('minimist')(process.argv.slice(2), {default: {n:100,m:10}});
-var repeat = argv.n;
-var limit = argv.m;
+var argv = require('minimist')(process.argv.slice(2), {default: {n:100,t:10}});
+var requests = argv.n;
+var timeLimit = argv.t;
 
 var Stomp = require('stompjs');
 var client = Stomp.overWS("ws://localhost:8080/stomp/broker");
@@ -45,12 +45,8 @@ var send = function(n) {
 var receive = function(startTime) {
     (function check() {
         var now = new Date();
-        if (count <= 0 || startTime.getTime() + limit * 1000 < now.getTime()) {
-            var total = now.getTime() - startTime.getTime();
-            console.log('[' + now.toISOString() + '] '
-                + received + ' received ('
-                + 'total: ' + total + ' ms.'
-                + ', avg: ' + total / repeat + ' ms.)');
+        if (count <= 0 || startTime.getTime() + timeLimit * 1000 < now.getTime()) {
+            require('./utils.js').logResult(startTime, now, requests, received);
             client.disconnect();
         } else {
             setImmediate(check);
@@ -62,7 +58,7 @@ connect                  // connect()
     .then(function() {   // subscribe()
         subscribe(); 
     }).then(function() { // send() messages
-        send(repeat);
+        send(requests);
     }).then(function() { // wait for all subscription messages
         receive(startTime);
     }

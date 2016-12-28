@@ -6,6 +6,7 @@
     "minimist"          : "*",
     "stompjs"           : "*",
     "promise"           : "*",
-    "request"           : "*"
+    "request"           : "*",
+    "request-promise"   : "*"
   }
 }

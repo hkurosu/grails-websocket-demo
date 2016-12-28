@@ -1,4 +1,4 @@
-var argv = require('minimist')(process.argv.slice(2), {default: {c:1,n:100,m:10}});
+var argv = require('minimist')(process.argv.slice(2), {default: {c:1,n:100,t:10}});
 
 var script = argv.s;
 if (script == null) {
@@ -6,22 +6,36 @@ if (script == null) {
     return;
 }
 var concurrency = argv.c;
-var repeat = argv.n;
-var limit = argv.m;
+var requests = argv.n;
+var timeLimit = argv.t;
 
 var exec = require('child_process').exec;
-var cmd = 'node ' + script + ' -n ' + repeat + ' -m ' + limit;
+var cmd = buildCmdLine(argv);
+console.log("Executing " + cmd + "");
 for (var i = 0; i < concurrency; ++i) {
     var child = exec(cmd, function(error, stdout, stderr) {
         console.log(stdout);
         if (stderr) {
-            console.log('stderr:\n', stderr);
+            console.error(stderr);
         }
         if (error !== null) {
-            console.log('exec error:\n', error);
+            console.assert('exec error:', error);
         }
     });
     //console.log('['+new Date().toISOString()+'] started child process['+(i+1)+']: ' + child.pid);
+}
+
+function buildCmdLine(opts) {
+    cmd = 'node ' + opts.s;
+    Object.keys(opts).forEach(function (key) {
+        if (key == '_')
+            return;
+        cmd += ' -' + key;
+        if (opts[key] && opts[key] !== true) {
+            cmd += ' ' + opts[key];
+        }
+    });
+    return cmd;
 }
 
 function usage() {
