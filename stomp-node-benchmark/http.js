@@ -4,7 +4,7 @@ var timeLimit = argv.t;
 var blocking = argv.b;
 var debug = argv.d;
 
-var request = blocking ? require('request-promise') : require('request');
+var request = require('request');
 if (debug) {
     request.debug = true;
 }
@@ -20,7 +20,7 @@ var send = function(n) {
     var callback = function() {
         --count;
         ++received;
-    }
+    };
     var opts = {
         uri: 'http://localhost:8080/stomp/health',
         method: 'POST',
@@ -28,11 +28,7 @@ var send = function(n) {
     };
     for (var i = 0; i < n; ++i) {
         ++count;
-        if (blocking) {
-            request(opts).then(callback);
-        } else {
-            request(opts, callback);
-        }
+        request(opts, callback);
     }
 };
 
