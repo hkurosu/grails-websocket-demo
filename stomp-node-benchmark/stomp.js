@@ -46,9 +46,11 @@ var receive = function(startTime) {
     (function check() {
         var now = new Date();
         if (count <= 0 || startTime.getTime() + limit * 1000 < now.getTime()) {
+            var total = now.getTime() - startTime.getTime();
             console.log('[' + now.toISOString() + '] '
                 + received + ' received ('
-                + (now.getTime() - startTime.getTime()) + ' ms.)');
+                + 'total: ' + total + ' ms.'
+                + ', avg: ' + total / repeat + ' ms.)');
             client.disconnect();
         } else {
             setImmediate(check);

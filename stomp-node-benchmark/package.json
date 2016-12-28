@@ -5,6 +5,7 @@
     "webworker-threads" : "*",
     "minimist"          : "*",
     "stompjs"           : "*",
-    "promise"           : "*"
+    "promise"           : "*",
+    "request"           : "*"
   }
 }
