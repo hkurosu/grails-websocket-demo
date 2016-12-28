@@ -17,14 +17,14 @@ var connect = new Promise(function(resolve, reject) {
     client.connect({}, resolve, reject);
 });
 
-var count = 0;
+var running = 0;
 var received = 0;
 
 var subscribe = function() {
     client.subscribe('/user/queue/health', function (message) {
         // console.log('Received: ' + message.body);
         ++received;
-        --count;
+        --running;
         // message.ack();
     }, {ack: 'client'});
     // console.log('Subscribing /user/queue/health');
@@ -38,21 +38,21 @@ var send = function(n) {
     for (var i = 0; i < n; ++i) {
         client.send('/app/health', {}, 'Hello');
         // console.log('Sent Hello');
-        ++count;
+        ++running;
     }
-}
+};
 
 var receive = function(startTime) {
     (function check() {
         var now = new Date();
-        if (count <= 0 || startTime.getTime() + timeLimit * 1000 < now.getTime()) {
+        if (running <= 0 || startTime.getTime() + timeLimit * 1000 < now.getTime()) {
             require('./utils.js').logResult(startTime, now, requests, received);
             client.disconnect();
         } else {
             setImmediate(check);
         }
     })();
-}
+};
 
 connect                  // connect()
     .then(function() {   // subscribe()
