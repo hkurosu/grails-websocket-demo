@@ -6,7 +6,7 @@ grails {
             stompEndpoints = [["/broker"]]
             clientInboundChannel.threadPoolSize = 4..1000
             clientOutboundChannel.threadPoolSize = 4..1000
-            useSockJs = false
+            useSockJs = true
         }
     }
 }

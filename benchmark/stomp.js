@@ -1,16 +1,33 @@
-
 // parse argv
 var utils = require('./utils.js');
 var args = utils.parseArgs();
+
+var debug = require('debug')('stomp-bench');
 
 // load required ...
 var Promise = require('promise');
 
 var stompFactory;
-stompFactory = function() {
-    var Stomp = require('stompjs');
-    return Stomp.overWS("ws://localhost:8080/stomp/broker");
-};
+if (args.useSockJs) {
+    debug('Loading SockJS client ...');
+    stompFactory = function() {
+        var Stomp = require('stompjs');
+        var SockJS = require('sockjs-client');
+        var opts = {};
+        if (typeof args.useSockJs === 'string') {
+            opts.transports = args.useSockJs;
+            debug('Using transport:', opts.transports);
+        }
+        var socket = new SockJS('http://localhost:8080/stomp/broker', [], opts);
+        return new Stomp.over(socket);
+    };
+} else {
+    debug('Loading Native WebSocket client ...');
+    stompFactory = function () {
+        var Stomp = require('stompjs');
+        return Stomp.overWS("ws://localhost:8080/stomp/broker/websocket");
+    };
+}
 
 // globals
 var running = 0;
@@ -23,11 +40,7 @@ for (var i = 0; i < args.concurrency; ++i) {
     var promise = new Promise(function(resolve, reject) {
         var client = stompFactory();
 
-        if (args.debug) {
-            client.debug = function(message) {
-                console.log(message);
-            }
-        }
+        client.debug = require('debug')('stomp');
 
         var receive = function() {
             ++received;

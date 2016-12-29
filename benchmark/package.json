@@ -1,10 +1,13 @@
 {
-  "name": "stomp-node-benchmark",
-  "version": "0.0.0",
+  "name": "benchmark",
+  "version": "0.0.1",
+  "description": "websocket benchmarking",
   "dependencies": {
     "minimist"          : "*",
     "stompjs"           : "*",
     "promise"           : "*",
-    "request"           : "*"
+    "request"           : "*",
+    "sockjs-client"     : "*",
+    "debug"             : "*"
   }
 }
