@@ -4,11 +4,11 @@ var utils = require('./utils.js');
 var args = utils.parseArgs();
 
 // load required ...
-var Stomp = require('stompjs');
 var Promise = require('promise');
 
 var stompFactory;
 stompFactory = function() {
+    var Stomp = require('stompjs');
     return Stomp.overWS("ws://localhost:8080/stomp/broker");
 };
 
@@ -60,14 +60,12 @@ var send = function(clients) {
     })();
 };
 
-var end = function(startTime, endCallback) {
+var end = function(clients) {
     (function check() {
         var now = new Date();
         var timeOut = startTime.getTime() + args.timeLimit * 1000 < now.getTime();
         if (running <= 0 || timeOut) {
             args.received = received;
-            // skip disconnect
-            // endCallback();
             utils.logResult(startTime, now, args);
             process.exit(timeOut ? 1 : 0);
         } else {
@@ -76,21 +74,20 @@ var end = function(startTime, endCallback) {
     })();
 };
 
+function disconnectAll(clients) {
+    for (var i = 0; i < clients.length; ++i) {
+        try {
+            clients[i].disconnect();
+        } catch (ignored) {
+            console.error("failed to disconnect", ignored);
+        }
+    }
+};
+
 Promise.all(promises)
     .then(function(clients) { // send() messages
         send(clients);
-        return clients;
-    }).then(function(clients) { // wait for all subscription messages
-        var endCallback = function() {
-            for (var i = 0; i < clients.length; ++i) {
-                try {
-                    clients[i].disconnect();
-                } catch (ignored) {
-                    console.error("failed to disconnect", ignored);
-                }
-            }
-        };
-        end(startTime, endCallback);
+        end(clients);
     });
 
 
