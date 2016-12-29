@@ -66,11 +66,10 @@ var end = function(startTime, endCallback) {
         var timeOut = startTime.getTime() + args.timeLimit * 1000 < now.getTime();
         if (running <= 0 || timeOut) {
             args.received = received;
+            // skip disconnect
+            // endCallback();
             utils.logResult(startTime, now, args);
-            endCallback();
-            if (timeOut) {
-                process.exit(1);
-            }
+            process.exit(timeOut ? 1 : 0);
         } else {
             setImmediate(check);
         }

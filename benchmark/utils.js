@@ -22,7 +22,7 @@ function logResult(startTime, endTime, args) {
 
 function parseArgs() {
     var argv = require('minimist')(process.argv.slice(2), {default: {c:10,n:100,t:60}});
-    var args = {};
+    var args = Object.assign({}, argv);
     args.requests = argv.n;
     args.timeLimit = argv.t;
     args.concurrency = argv.c;
