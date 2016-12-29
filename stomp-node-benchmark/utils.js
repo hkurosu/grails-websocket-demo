@@ -21,14 +21,14 @@ function logResult(startTime, endTime, args) {
 }
 
 function parseArgs() {
-    var argv = require('minimist')(process.argv.slice(2), {default: {c:10,n:100,t:10}});
+    var argv = require('minimist')(process.argv.slice(2), {default: {c:10,n:100,t:60}});
     var args = {};
     args.requests = argv.n;
     args.timeLimit = argv.t;
     args.concurrency = argv.c;
     args.debug = argv.d;
-    if (argv.clients) {
-        args.clients = argv.clients;
+    if (argv.k) {
+        args.keepalive = true;
     }
     return args;
 }

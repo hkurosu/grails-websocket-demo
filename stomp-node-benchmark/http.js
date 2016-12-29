@@ -14,7 +14,7 @@ var startTime;
 
 var send = function(n) {
     startTime = new Date();
-    console.log('[' + startTime.toISOString() + '] sending ' + n + ' times.');
+    console.log('[' + startTime.toISOString() + '] sending  ' + n + ' times.');
     var callback = function() {
         --running;
         ++received;
@@ -22,7 +22,7 @@ var send = function(n) {
     var opts = {
         uri: 'http://localhost:8080/stomp/health',
         method: 'POST',
-        forever: true,
+        forever: args.keepalive,
         body: 'Hello'
     };
     (function sendRequest() {
