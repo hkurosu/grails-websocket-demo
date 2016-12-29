@@ -7,6 +7,11 @@ var args = utils.parseArgs();
 var Stomp = require('stompjs');
 var Promise = require('promise');
 
+var stompFactory;
+stompFactory = function() {
+    return Stomp.overWS("ws://localhost:8080/stomp/broker");
+};
+
 // globals
 var running = 0;
 var sent = 0;
@@ -16,7 +21,7 @@ var startTime;
 var promises = [];
 for (var i = 0; i < args.concurrency; ++i) {
     var promise = new Promise(function(resolve, reject) {
-        var client = Stomp.overWS("ws://localhost:8080/stomp/broker");
+        var client = stompFactory();
 
         if (args.debug) {
             client.debug = function(message) {
@@ -63,7 +68,9 @@ var end = function(startTime, endCallback) {
             args.received = received;
             utils.logResult(startTime, now, args);
             endCallback();
-            process.exit(timeOut ? 1 : 0);
+            if (timeOut) {
+                process.exit(1);
+            }
         } else {
             setImmediate(check);
         }

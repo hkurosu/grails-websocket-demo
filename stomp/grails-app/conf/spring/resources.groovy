@@ -1,7 +1,7 @@
 import demo.websocket.config.WebSocketMessageBrokerConfigurer
 import grails.plugin.springwebsocket.ConfigUtils
 import grails.plugin.springwebsocket.GrailsSimpAnnotationMethodMessageHandler
-import org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter
+import org.springframework.jmx.export.MBeanExporter
 
 // Place your Spring DSL code here
 beans = {
@@ -17,4 +17,15 @@ beans = {
     }
 
     webSocketMessageBrokerConfigurer(WebSocketMessageBrokerConfigurer, config) {}
+
+    // enable util namespace
+    xmlns util: "http://www.springframework.org/schema/util"
+
+    // enable JMX beans
+    mbeanExporer(MBeanExporter) { bean ->
+        beans = ref('mbeanMap')
+    }
+    util.map(id: 'mbeanMap') {
+        entry(key: 'WebSocket:name=messageBrokerStats', 'value-ref': 'webSocketMessageBrokerStats')
+    }
 }

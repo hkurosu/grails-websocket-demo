@@ -4,9 +4,9 @@ grails {
             useCustomConfig = true
             dispatcherServlet.additionalMappings = ["/broker/*"]
             stompEndpoints = [["/broker"]]
-            messageBroker.useSockJs = false
             clientInboundChannel.threadPoolSize = 4..1000
             clientOutboundChannel.threadPoolSize = 4..1000
+            useSockJs = false
         }
     }
 }

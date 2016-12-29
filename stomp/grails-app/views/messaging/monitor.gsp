@@ -12,7 +12,7 @@
 
     <script type="text/javascript">
     $(function() {
-        <g:if test="${config.messageBroker.useSockJs}">
+        <g:if test="${config?.useSockJs}">
         // toggle socket to switch between SockJS and native WebSocket
         var socket = new SockJS("${createLink(uri: '/broker')}");
         </g:if>

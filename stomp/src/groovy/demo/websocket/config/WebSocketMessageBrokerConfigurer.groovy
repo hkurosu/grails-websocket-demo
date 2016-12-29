@@ -68,7 +68,7 @@ class WebSocketMessageBrokerConfigurer extends AbstractWebSocketMessageBrokerCon
         for (String[] endpoint in config.stompEndpoints) {
             def registration = ser.addEndpoint(endpoint)
             registration.setAllowedOrigins(allowedOrigins)
-            if (config.messageBroker?.useSockJs) {
+            if (config?.useSockJs) {
                 registration.withSockJS()
             }
         }
