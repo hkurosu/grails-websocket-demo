@@ -22,6 +22,7 @@ var send = function(n) {
     var opts = {
         uri: 'http://localhost:8080/stomp/health',
         method: 'POST',
+        forever: true,
         body: 'Hello'
     };
     (function sendRequest() {

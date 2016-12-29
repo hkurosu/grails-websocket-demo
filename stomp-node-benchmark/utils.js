@@ -4,7 +4,7 @@ function logResult(startTime, endTime, args) {
     var totalTime = endTime.getTime() - startTime.getTime();
     var avgTime = totalTime / args.requests;
     console.log('[' + endTime.toISOString() + '] '
-        + args.received + ' received ('
+        + 'received ' + args.received + ' times ('
         + 'total: ' + totalTime + ' ms.'
         + ', avg: ' + avgTime + ' ms.)');
     var text = JSON.stringify({
@@ -17,7 +17,7 @@ function logResult(startTime, endTime, args) {
         startTime: startTime.toISOString(),
         endTime: endTime.toISOString()
     });
-    process.stderr.write(text);
+    process.stderr.write(text+'\n');
 }
 
 function parseArgs() {
@@ -27,6 +27,9 @@ function parseArgs() {
     args.timeLimit = argv.t;
     args.concurrency = argv.c;
     args.debug = argv.d;
+    if (argv.clients) {
+        args.clients = argv.clients;
+    }
     return args;
 }
 
