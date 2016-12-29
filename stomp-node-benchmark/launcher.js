@@ -1,18 +1,16 @@
-var argv = require('minimist')(process.argv.slice(2), {default: {c:1,n:100,t:10}});
+var argv = require('minimist')(process.argv.slice(2), {default: {c:10,n:100,t:10,p:1}});
 
-var script = argv.s;
-if (script == null) {
+if (argv.s == null) {
     usage();
     return;
 }
-var concurrency = argv.c;
-var requests = argv.n;
-var timeLimit = argv.t;
+
+var processes = argv.p;
 
 var exec = require('child_process').exec;
 var cmd = buildCmdLine(argv);
 console.log("Executing " + cmd + "");
-for (var i = 0; i < concurrency; ++i) {
+for (var i = 0; i < processes; ++i) {
     var child = exec(cmd, function(error, stdout, stderr) {
         console.log(stdout);
         if (stderr) {
@@ -30,8 +28,6 @@ function buildCmdLine(opts) {
     Object.keys(opts).forEach(function (key) {
         if (key == '_') {
             return;
-        } else if (key == 'c') {
-            cmd += ' -c 1';
         } else {
             cmd += ' -' + key;
             if (opts[key] && opts[key] !== true) {
