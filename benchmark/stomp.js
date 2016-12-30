@@ -98,7 +98,12 @@ var end = function(clients) {
             args.received = received;
             utils.logResult(startTime, now, args);
             disconnectAll(clients);
-            process.exit(timeOut ? 1 : 0);
+            // force exit if using sockjs client.
+            if (args.sockjs) {
+                setTimeout(function () {
+                    process.exit();
+                }, 100);
+            }
         } else {
             setImmediate(check);
         }
@@ -119,6 +124,8 @@ Promise.all(promises)
     .then(function(clients) { // send() messages
         send(clients);
         end(clients);
+    }).catch(function(error) {
+        throw error;
     });
 
 
