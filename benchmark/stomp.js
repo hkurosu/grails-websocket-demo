@@ -1,31 +1,46 @@
 // parse argv
 var utils = require('./utils.js');
 var args = utils.parseArgs();
+if (args.url === undefined) {
+    if (args.sockjs) {
+        args.url = '/broker';
+    } else if (args.sockjsServer) {
+        args.url = args.baseUrl.replace(/^http/, 'ws') + '/broker/websocket';
+    } else {
+        args.url = args.baseUrl.replace(/^http/, 'ws') + '/broker';
+    }
+}
 
 var debug = require('debug')('stomp-bench');
+var receiveDdg = require('debug')('stomp-bench:receive');
+var sendDbg = require('debug')('stop-bench:send');
 
 // load required ...
 var Promise = require('promise');
 
 var stompFactory;
-if (args.useSockJs) {
+if (args.sockjs) {
     debug('Loading SockJS client ...');
     stompFactory = function() {
         var Stomp = require('stompjs');
         var SockJS = require('sockjs-client');
+        var url = args.fullUrl();
+        debug('Connecting to ', url);
         var opts = {};
-        if (typeof args.useSockJs === 'string') {
-            opts.transports = args.useSockJs;
+        if (typeof args.sockjs === 'string') {
+            opts.transports = args.sockjs;
             debug('Using transport:', opts.transports);
         }
-        var socket = new SockJS('http://localhost:8080/stomp/broker', [], opts);
+        var socket = new SockJS(url, [], opts);
         return new Stomp.over(socket);
     };
 } else {
     debug('Loading Native WebSocket client ...');
     stompFactory = function () {
         var Stomp = require('stompjs');
-        return Stomp.overWS("ws://localhost:8080/stomp/broker/websocket");
+        var url = args.fullUrl();
+        debug('Connecting to ', url);
+        return Stomp.overWS(url);
     };
 }
 
@@ -45,6 +60,7 @@ for (var i = 0; i < args.concurrency; ++i) {
         var receive = function() {
             ++received;
             --running;
+            receiveDdg('Received: %d, Running: %d', received, running);
         };
 
         var connectCallback = function() {
@@ -67,6 +83,7 @@ var send = function(clients) {
                 client.send('/app/health', {}, 'Hello');
                 ++running;
                 ++sent;
+                sendDbg('Sent: %d, Running: %d', sent, running);
             }
             setImmediate(sendRequest);
         }
@@ -80,6 +97,7 @@ var end = function(clients) {
         if (running <= 0 || timeOut) {
             args.received = received;
             utils.logResult(startTime, now, args);
+            disconnectAll(clients);
             process.exit(timeOut ? 1 : 0);
         } else {
             setImmediate(check);
@@ -95,7 +113,7 @@ function disconnectAll(clients) {
             console.error("failed to disconnect", ignored);
         }
     }
-};
+}
 
 Promise.all(promises)
     .then(function(clients) { // send() messages

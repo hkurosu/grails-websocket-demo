@@ -1,10 +1,16 @@
 var utils = require('./utils.js');
 var args = utils.parseArgs();
+// additional args
+if (args.url === undefined) {
+    args.url = '/health';
+}
 
 var request = require('request');
 if (args.debug) {
     request.debug = true;
 }
+
+var debug = require('debug')('http-bench');
 
 var running = 0;
 var sent = 0;
@@ -20,11 +26,13 @@ var send = function(n) {
         ++received;
     };
     var opts = {
-        uri: 'http://localhost:8080/stomp/health',
+        uri: args.fullUrl(),
         method: 'POST',
-        forever: args.keepalive,
+        forever: args.keepAlive,
         body: 'Hello'
     };
+    debug('Sending HTTP requests: %d', args.requests);
+    debug('Request options: ' + JSON.stringify(opts));
     (function sendRequest() {
         if (sent < args.requests) {
             if (running <= args.concurrency) {
@@ -43,11 +51,12 @@ var end = function() {
         if (running <= 0 || startTime.getTime() + args.timeLimit * 1000 < now.getTime()) {
             args.received = received;
             utils.logResult(startTime, now, args);
+            debug('Received HTTP Requests: %d', received);
         } else {
             setImmediate(check);
         }
     })();
-}
+};
 
 send(args.requests);
 end();

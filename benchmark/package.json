@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "websocket benchmarking",
   "dependencies": {
-    "minimist"          : "*",
+    "yargs"             : "*",
     "stompjs"           : "*",
     "promise"           : "*",
     "request"           : "*",
