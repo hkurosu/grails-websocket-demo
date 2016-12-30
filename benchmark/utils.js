@@ -7,7 +7,7 @@ function logResult(startTime, endTime, args) {
         + 'received ' + args.received + ' times ('
         + 'total: ' + totalTime + ' ms.'
         + ', avg: ' + avgTime + ' ms.)');
-    var text = JSON.stringify({
+    var json = {
         script: path.basename(process.argv[1]),
         requests: args.requests,
         concurrency: args.concurrency,
@@ -16,7 +16,15 @@ function logResult(startTime, endTime, args) {
         avgTime: avgTime,
         startTime: startTime.toISOString(),
         endTime: endTime.toISOString()
-    });
+    };
+    if (args.useSockJs) {
+        if (typeof args.useSockJs === 'string') {
+            json.transport = args.useSockJs;
+        } else {
+            json.transport = 'websocket';
+        }
+    }
+    var text = JSON.stringify(json);
     process.stderr.write(text+'\n');
 }
 
