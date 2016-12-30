@@ -3,13 +3,12 @@ var path = require('path');
 function logResult(startTime, endTime, args) {
     var totalTime = endTime.getTime() - startTime.getTime();
     var avgTime = totalTime / args.requests;
-    var script = path.basename(process.argv[1], '.js');
     console.log('[' + endTime.toISOString() + '] '
         + 'received ' + args.received + ' times ('
         + 'total: ' + totalTime + ' ms.'
         + ', avg: ' + avgTime + ' ms.)');
     var json = {
-        script: script,
+        script: args.script,
         startTime: startTime.toISOString(),
         endTime: endTime.toISOString(),
         requests: args.requests,
@@ -24,7 +23,7 @@ function logResult(startTime, endTime, args) {
         } else {
             json.transport = 'sockjs';
         }
-    } else if (script == 'stomp') {
+    } else if (args.script == 'stomp') {
         json.transport = 'websocket'
     }
     var text = JSON.stringify(json);
@@ -80,9 +79,11 @@ var opts = {
 };
 
 function parseArgs() {
+    var prefix = 'YARGS_' + path.basename(process.argv[1], '.js').replace(/-/g, '_').toUpperCase();
     var args = require('yargs')
         .options(opts)
         .config()
+        .env(prefix)
         .help()
         .alias('help', ['h', '?'])
         .usage('Usage: $0 [options]')
@@ -96,7 +97,8 @@ function parseArgs() {
         } else {
             return self.url;
         }
-    }
+    };
+    args.script = path.basename(args['$0'], '.js');
     return args;
 }
 
