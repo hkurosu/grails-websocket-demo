@@ -32,7 +32,10 @@ var send = function(n) {
         uri: args.fullUrl(),
         method: 'POST',
         forever: args.keepAlive,
-        body: 'Hello'
+        body: 'Hello',
+        agentOptions: {
+            maxSockets: args.concurrency
+        }
     };
     debug('Sending HTTP requests: %d', args.requests);
     debug('Request options: ' + JSON.stringify(opts));
