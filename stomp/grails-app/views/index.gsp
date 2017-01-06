@@ -17,7 +17,7 @@
             var socket = new SockJS("${createLink(uri: '/broker')}");
             </g:if>
             <g:else>
-            var socket = new WebSocket("ws://localhost:8080/stomp/broker");
+            var socket = new WebSocket("ws://${request.serverName}:${request.serverPort}${request.contextPath}/broker");
             </g:else>
             var client = Stomp.over(socket);
 

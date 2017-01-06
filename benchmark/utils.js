@@ -67,6 +67,7 @@ var opts = {
     },
     'sockjs-server': {
         default: true,
+        type: 'boolean',
         description: 'Server supports SockJS (WebSocket only)'
     },
     'base-url': {

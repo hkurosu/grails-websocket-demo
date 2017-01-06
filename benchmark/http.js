@@ -24,6 +24,9 @@ var send = function(n) {
     var callback = function() {
         --running;
         ++received;
+        if (received > 0 && received % 1000 == 0) {
+            debug('Received: %d, Running: %d', received, running);
+        }
     };
     var opts = {
         uri: args.fullUrl(),
@@ -35,10 +38,14 @@ var send = function(n) {
     debug('Request options: ' + JSON.stringify(opts));
     (function sendRequest() {
         if (sent < args.requests) {
-            if (running <= args.concurrency) {
+            var stop = new Date().getTime() + 100; // stop looping after 100ms
+            while (sent < args.requests && running < args.concurrency && stop > new Date().getTime()) {
                 request(opts, callback);
                 ++running;
                 ++sent;
+                if (sent > 0 && sent % 1000 == 0) {
+                    debug('Sent: %d, Running: %d', sent, running);
+                }
             }
             setImmediate(sendRequest);
         }
@@ -48,7 +55,7 @@ var send = function(n) {
 var end = function() {
     (function check() {
         var now = new Date();
-        if (running <= 0 || startTime.getTime() + args.timeLimit * 1000 < now.getTime()) {
+        if (received >= args.requests || startTime.getTime() + args.timeLimit * 1000 < now.getTime()) {
             args.received = received;
             utils.logResult(startTime, now, args);
             debug('Received HTTP Requests: %d', received);

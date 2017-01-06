@@ -1,0 +1,35 @@
+events {
+    worker_connections  1024;
+}
+
+http {
+    access_log  logs/access.log  combined;
+#    error_log logs/error.log debug;
+
+    map $http_upgrade $connection_upgrade {
+        default close;
+        websocket Upgrade;
+    }
+
+    server {
+        listen 5050;
+
+        location / {
+            proxy_pass http://backend;
+            proxy_http_version 1.1;
+            proxy_set_header Host $http_host;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection $connection_upgrade;
+        }
+
+    }
+
+    upstream backend {
+        ip_hash;
+        server localhost:8080;
+
+        # maintain a maximum of 20 idle connections to each upstream server
+        keepalive 20;
+    }
+
+}
