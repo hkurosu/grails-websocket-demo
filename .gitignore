@@ -1,6 +1,7 @@
 .idea/
 .slcache/
 target/
+results/
 node_modules/
 *.iml
 .asscache

@@ -111,11 +111,9 @@ var end = function(clients) {
             utils.logResult(startTime, now, args);
             disconnectAll(clients);
             // force exit if using sockjs client.
-            if (args.sockjs) {
-                setTimeout(function () {
-                    process.exit();
-                }, 100);
-            }
+            setTimeout(function () {
+                process.exit();
+            }, 100);
         } else {
             setImmediate(check);
         }

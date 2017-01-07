@@ -2,7 +2,7 @@ var path = require('path');
 
 function logResult(startTime, endTime, args) {
     var totalTime = endTime.getTime() - startTime.getTime();
-    var avgTime = totalTime / args.requests;
+    var avgTime = totalTime / args.received;
     console.log('[' + endTime.toISOString() + '] '
         + 'received ' + args.received + ' times ('
         + 'total: ' + totalTime + ' ms.'
@@ -25,6 +25,8 @@ function logResult(startTime, endTime, args) {
         }
     } else if (args.script == 'stomp') {
         json.transport = 'websocket'
+    } else if (args.script == 'http') {
+        json.transport = 'http';
     }
     var text = JSON.stringify(json);
     process.stderr.write(text+'\n');
