@@ -5,6 +5,7 @@ import org.springframework.messaging.simp.config.ChannelRegistration
 import org.springframework.messaging.simp.config.MessageBrokerRegistry
 import org.springframework.web.socket.config.annotation.AbstractWebSocketMessageBrokerConfigurer
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker
+import org.springframework.web.socket.config.annotation.SockJsServiceRegistration
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry
 
 @Configuration
@@ -69,7 +70,13 @@ class WebSocketMessageBrokerConfigurer extends AbstractWebSocketMessageBrokerCon
             def registration = ser.addEndpoint(endpoint)
             registration.setAllowedOrigins(allowedOrigins)
             if (config?.useSockJs) {
-                registration.withSockJS()
+                SockJsServiceRegistration service = registration.withSockJS()
+                if (config?.sockJs?.heartbeatTime) {
+                    service.heartbeatTime = config.sockJs.heartbeatTime
+                }
+                if (config?.sockJs?.disconnectDelay) {
+                    service.disconnectDelay = config.sockJs.disconnectDelay
+                }
             }
         }
     }

@@ -4,9 +4,12 @@ grails {
             useCustomConfig = true
             dispatcherServlet.additionalMappings = ["/broker/*"]
             stompEndpoints = [["/broker"]]
-            clientInboundChannel.threadPoolSize = 100..1000
-            clientOutboundChannel.threadPoolSize = 100..1000
+//            clientInboundChannel.threadPoolSize = 100..1000
+//            clientOutboundChannel.threadPoolSize = 100..1000
             useSockJs = true
+            sockJs {
+                heartbeatTime = 1000
+            }
         }
     }
 }
@@ -19,6 +22,7 @@ log4j = log4j << {
 
     trace 'org.springframework.web.socket.messaging.StompSubProtocolHandler'
     trace 'org.springframework.web.socket.server.support.DefaultHandshakeHandler'
+//    trace 'org.springframework.web.socket.sockjs.transport.handler'
 
     debug 'demo.websocket.HealthController'
 }

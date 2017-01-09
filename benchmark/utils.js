@@ -17,6 +17,7 @@ function logResult(startTime, endTime, args) {
         totalTime: totalTime,
         avgTime: avgTime
     };
+    // add transport
     if (args.sockjs) {
         if (typeof args.sockjs === 'string') {
             json.transport = args.sockjs;
@@ -24,10 +25,12 @@ function logResult(startTime, endTime, args) {
             json.transport = 'sockjs';
         }
     } else if (args.script == 'stomp') {
-        json.transport = 'websocket'
+        json.transport = 'websocket (native)'
     } else if (args.script == 'http') {
         json.transport = 'http';
     }
+    // add proxy
+    json.proxy = args.useProxy ? 'proxy' : 'direct';
     var text = JSON.stringify(json);
     process.stderr.write(text+'\n');
 }
@@ -76,8 +79,18 @@ var opts = {
         default: 'http://localhost:8080/stomp',
         description: 'Server base URL'
     },
+    'proxy-url': {
+        default: 'http://localhost:5050/stomp',
+        description: 'Server proxy URL'
+    },
     url: {
         description: 'Either full URL or relative URL'
+    },
+    P : {
+        alias: 'use-proxy',
+        default: false,
+        type: 'boolean',
+        description: 'Use proxy to execute'
     }
 };
 
@@ -93,10 +106,11 @@ function parseArgs() {
         .argv;
     args.fullUrl = function() {
         self = this;
+        var baseUrl = self.useProxy ? self.proxyUrl : self.baseUrl;
         if (self.url === undefined) {
-            return self.baseUrl;
+            return baseUrl;
         } else if (self.url.startsWith('/')) {
-            return self.baseUrl + self.url;
+            return baseUrl + self.url;
         } else {
             return self.url;
         }

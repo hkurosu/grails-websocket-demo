@@ -31,19 +31,20 @@ goto END
 
 :STOMP
 if "%YARGS_STOMP_SOCKJS_SERVER%" == "" (
-    for %%T in (websocket, xhr-streaming, xhr-polling) do call :ITERATE stomp.js --sockjs=%%T
+    call :ITERATE stomp.js
+    for %%T in (websocket, xhr-polling, xhr-streaming) do call :ITERATE stomp.js --sockjs=%%T
 ) else (
     call :ITERATE stomp.js
 )
 goto END
 
 :ITERATE
-@set TIMEOUT=300
-%ECHO% node %* -c 1    -n 1000    -t %TIMEOUT% 2>> %RESULT_FILE%
-%ECHO% node %* -c 5    -n 5000    -t %TIMEOUT% 2>> %RESULT_FILE%
-%ECHO% node %* -c 10   -n 100000  -t %TIMEOUT% 2>> %RESULT_FILE%
-%ECHO% node %* -c 100  -n 100000  -t %TIMEOUT% 2>> %RESULT_FILE%
-%ECHO% node %* -c 1000 -n 100000  -t %TIMEOUT% 2>> %RESULT_FILE%
+@if "%TIMEOUT%" == "" set TIMEOUT=300
+%ECHO% node %* %OPTS% -c 1    -n 1000    -t %TIMEOUT% 2>> %RESULT_FILE%
+%ECHO% node %* %OPTS% -c 5    -n 5000    -t %TIMEOUT% 2>> %RESULT_FILE%
+%ECHO% node %* %OPTS% -c 10   -n 100000  -t %TIMEOUT% 2>> %RESULT_FILE%
+%ECHO% node %* %OPTS% -c 100  -n 100000  -t %TIMEOUT% 2>> %RESULT_FILE%
+%ECHO% node %* %OPTS% -c 1000 -n 100000  -t %TIMEOUT% 2>> %RESULT_FILE%
 
 :END
 

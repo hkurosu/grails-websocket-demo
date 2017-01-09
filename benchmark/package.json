@@ -8,6 +8,7 @@
     "promise"           : "*",
     "request"           : "*",
     "sockjs-client"     : "*",
-    "debug"             : "*"
+    "debug"             : "*",
+    "json2xls"          : "*"
   }
 }
