@@ -50,6 +50,8 @@ var running = 0;
 var sent = 0;
 var received = 0;
 var startTime;
+var endTime;
+var clients = [];
 
 var promises = [];
 for (var i = 0; i < args.concurrency; ++i) {
@@ -73,6 +75,7 @@ for (var i = 0; i < args.concurrency; ++i) {
             if (connected > 1 && connected % 1000 == 0) {
                 debug('Connected: %d', connected);
             }
+            clients.push(client);
             resolve(client);
         };
 
@@ -87,7 +90,7 @@ var send = function(clients) {
     (function sendRequest() {
         if (sent < args.requests) {
             var stop = new Date().getTime() + 100; // stop looping after 100ms
-            while (sent < args.requests && running < args.concurrency && stop > new Date().getTime()) {
+            while (sent < args.requests && running <= args.concurrency && stop > new Date().getTime()) {
                 var client = clients[sent % clients.length];
                 client.send('/app/health', {}, 'Hello');
                 ++running;
@@ -104,21 +107,29 @@ var send = function(clients) {
 
 var end = function(clients) {
     (function check() {
-        var now = new Date();
-        var timeOut = startTime.getTime() + args.timeLimit * 1000 < now.getTime();
-        if (received >= args.requests || timeOut) {
-            args.received = received;
-            utils.logResult(startTime, now, args);
-            disconnectAll(clients);
-            // force exit if using sockjs client.
-            setTimeout(function () {
-                process.exit();
-            }, 100);
+        if (received >= args.requests) {
+            endTime = new Date();
+            clearTimeout(timeoutId);
+            setImmediate(wrapUp);
         } else {
             setImmediate(check);
         }
     })();
 };
+
+function wrapUp() {
+    args.received = received;
+    var time1 = (startTime === undefined) ? new Date() : startTime;
+    var time2 = (endTime === undefined)   ? new Date() : endTime;
+    if (received == 0) {
+        console.log('[' + time2.toISOString() + '] '
+            + 'FAILED. Only'
+            + clients.length + ' connections created.');
+    }
+    utils.logResult(time1, time2, args);
+    disconnectAll(clients);
+    process.exit();
+}
 
 function disconnectAll(clients) {
     for (var i = 0; i < clients.length; ++i) {
@@ -131,6 +142,7 @@ function disconnectAll(clients) {
 }
 
 console.log('[' + new Date().toISOString() + '] creating ' + args.concurrency + ' connections.');
+var timeoutId = setTimeout(wrapUp, args.timeLimit * 1000);
 Promise.all(promises)
     .then(function(clients) { // send() messages
         send(clients);
