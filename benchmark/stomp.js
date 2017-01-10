@@ -123,8 +123,7 @@ function wrapUp() {
     var time2 = (endTime === undefined)   ? new Date() : endTime;
     if (received == 0) {
         console.log('[' + time2.toISOString() + '] '
-            + 'FAILED. Only'
-            + clients.length + ' connections created.');
+            + '[FAILED] ' + connected + ' connections are created.');
     }
     utils.logResult(time1, time2, args);
     disconnectAll(clients);

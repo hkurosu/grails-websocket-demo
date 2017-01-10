@@ -27,7 +27,6 @@ http {
     upstream backend {
         ip_hash;
         server localhost:8080;
-
         keepalive 10000;
     }
 
