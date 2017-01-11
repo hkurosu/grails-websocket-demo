@@ -8,13 +8,15 @@
     <meta name="layout" content="main"/>
 
     <asset:javascript src="jquery" />
-    <asset:javascript src="spring-websocket" />
+    <asset:javascript src="sockjs-1.1.1" />
+    <asset:javascript src="stomp" />
 
     <script type="text/javascript">
         $(function() {
             <g:if test="${config?.useSockJs}">
             // toggle socket to switch between SockJS and native WebSocket
             var socket = new SockJS("${createLink(uri: '/broker')}");
+            console.log('SockJS version: ' + SockJS.version);
             </g:if>
             <g:else>
             var socket = new WebSocket("ws://${request.serverName}:${request.serverPort}${request.contextPath}/broker");
