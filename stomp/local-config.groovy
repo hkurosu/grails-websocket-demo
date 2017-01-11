@@ -8,7 +8,8 @@ grails {
 //            clientOutboundChannel.threadPoolSize = 100..1000
             useSockJs = true
             sockJs {
-                heartbeatTime = 1000
+//                webSocketEnabled = false
+//                heartbeatTime = 1000
             }
         }
     }

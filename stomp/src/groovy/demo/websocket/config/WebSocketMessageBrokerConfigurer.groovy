@@ -71,6 +71,9 @@ class WebSocketMessageBrokerConfigurer extends AbstractWebSocketMessageBrokerCon
             registration.setAllowedOrigins(allowedOrigins)
             if (config?.useSockJs) {
                 SockJsServiceRegistration service = registration.withSockJS()
+                if (config?.sockJs?.webSocketEnabled instanceof Boolean) {
+                    service.webSocketEnabled = config.sockJs.webSocketEnabled
+                }
                 if (config?.sockJs?.heartbeatTime) {
                     service.heartbeatTime = config.sockJs.heartbeatTime
                 }
