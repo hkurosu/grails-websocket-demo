@@ -24,14 +24,13 @@
             var client = Stomp.over(socket);
 
             client.connect({}, function() {
-                client.subscribe("/topic/hello", function(message) {
+                client.subscribe("/user/queue/hello", function(message) {
                     $("#helloDiv").text(message.body);
                 });
             });
 
             $("#helloButton").click(function() {
                 client.send("/app/hello", {}, JSON.stringify("world"));
-//                client.send("/topic/hello", {}, JSON.stringify("world"));
             });
         });
     </script>

@@ -1,22 +1,12 @@
-import demo.websocket.config.WebSocketMessageBrokerConfigurer
+import demo.websocket.config.ServerWebSocketConfig
 import grails.plugin.springwebsocket.ConfigUtils
-import grails.plugin.springwebsocket.GrailsSimpAnnotationMethodMessageHandler
 import org.springframework.jmx.export.MBeanExporter
 
 // Place your Spring DSL code here
 beans = {
     def config = ConfigUtils.getSpringWebsocketConfig application
 
-    grailsSimpAnnotationMethodMessageHandler(
-            GrailsSimpAnnotationMethodMessageHandler,
-            ref("clientInboundChannel"),
-            ref("clientOutboundChannel"),
-            ref("brokerMessagingTemplate")
-    ) {
-        destinationPrefixes = config.messageBroker.applicationDestinationPrefixes
-    }
-
-    webSocketMessageBrokerConfigurer(WebSocketMessageBrokerConfigurer, config) {}
+    serverWebSocketConfig(ServerWebSocketConfig, config) {}
 
     // enable util namespace
     xmlns util: "http://www.springframework.org/schema/util"
