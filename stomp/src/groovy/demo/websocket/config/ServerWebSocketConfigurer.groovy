@@ -32,7 +32,7 @@ import org.springframework.web.util.UrlPathHelper
  * }
  *
  *
- * /
+ */
 class ServerWebSocketConfigurer extends AbstractWebSocketMessageBrokerConfigurer {
 
     ConfigObject config
