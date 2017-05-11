@@ -22,6 +22,7 @@ To turn OFF SockJS,
  
      // def config = ConfigUtils.getSpringWebsocketConfig application
      // serverWebSocketConfig(ServerWebSocketConfig, config) {}
+     
 
 ## benckmark
 Websocket benchmarking tools written by Node.js.
