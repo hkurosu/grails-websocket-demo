@@ -123,3 +123,17 @@ log4j = {
            'org.hibernate',
            'net.sf.ehcache.hibernate'
 }
+
+//
+// Custom websocket config
+//
+grails {
+    plugin {
+        springwebsocket {
+            dispatcherServlet.additionalMappings = ["/broker/*"]
+            stompEndpoints = [['/broker']]
+            // extra flag
+            useSockJs = true
+        }
+    }
+}

@@ -10,7 +10,29 @@ import org.springframework.web.util.UrlPathHelper
 
 /**
  * Implements {@code WebSocketMessageBrokerConfigurer} to help Server-side WebSocket bean injection.
- */
+ *
+ * Extends {@code grails.plugin.springwebsocket.WebSocketConfig} to support no SockJs
+ * server.
+ *
+ * To turn OFF SockJS,
+ * 1. set "useSockJs" to false
+ * {@code
+ * grails {
+ *   plugin {
+ *     springwebsocket {
+ *       useSockJs = false
+ *     }
+ *   }
+ * }
+ *
+ * 2. Uncomment these two lines in resources.groovy
+ * {@code
+ *    // def config = ConfigUtils.getSpringWebsocketConfig application
+ *    // serverWebSocketConfig(ServerWebSocketConfig, config) {}
+ * }
+ *
+ *
+ * /
 class ServerWebSocketConfigurer extends AbstractWebSocketMessageBrokerConfigurer {
 
     ConfigObject config
@@ -59,7 +81,7 @@ class ServerWebSocketConfigurer extends AbstractWebSocketMessageBrokerConfigurer
         urlPathHelper.alwaysUseFullPath = true
         ser.urlPathHelper = urlPathHelper
         // add endpoint
-        StompWebSocketEndpointRegistration registration = ser.addEndpoint(config.stompEndpoint as String)
+        StompWebSocketEndpointRegistration registration = ser.addEndpoint(config.stompEndpoints[0])
         // add origin
         if (config.allowedOrigins) {
             registration.allowedOrigins = config.allowedOrigins

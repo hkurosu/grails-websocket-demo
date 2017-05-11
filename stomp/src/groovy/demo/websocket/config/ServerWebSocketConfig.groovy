@@ -1,5 +1,6 @@
 package demo.websocket.config
 
+import grails.plugin.springwebsocket.GrailsSimpAnnotationMethodMessageHandler
 import org.codehaus.groovy.grails.commons.GrailsApplication
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
@@ -26,7 +27,7 @@ class ServerWebSocketConfig extends DelegatingWebSocketMessageBrokerConfiguratio
 
     @Override
     SimpAnnotationMethodMessageHandler simpAnnotationMethodMessageHandler() {
-        GrailsAnnotationMethodMessageHandler handler = new GrailsAnnotationMethodMessageHandler(
+        GrailsSimpAnnotationMethodMessageHandler handler = new GrailsSimpAnnotationMethodMessageHandler(
                 clientInboundChannel(), clientOutboundChannel(), brokerMessagingTemplate())
         handler.grailsApplication = grailsApplication
 

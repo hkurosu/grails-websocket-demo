@@ -4,9 +4,14 @@ import org.springframework.jmx.export.MBeanExporter
 
 // Place your Spring DSL code here
 beans = {
-    def config = ConfigUtils.getSpringWebsocketConfig application
 
-    serverWebSocketConfig(ServerWebSocketConfig, config) {}
+    // uncomment to use custom config
+    // def config = ConfigUtils.getSpringWebsocketConfig application
+    // serverWebSocketConfig(ServerWebSocketConfig, config) {}
+
+    //
+    // Optional - to support JMX beans
+    //
 
     // enable util namespace
     xmlns util: "http://www.springframework.org/schema/util"

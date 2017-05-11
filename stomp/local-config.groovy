@@ -1,17 +1,3 @@
-grails {
-    plugin {
-        springwebsocket {
-            useCustomConfig = true
-            dispatcherServlet.additionalMappings = ["/broker/*"]
-            stompEndpoint = '/broker'
-            useSockJs = true
-            sockJs {
-//                webSocketEnabled = false
-//                heartbeatTime = 1000
-            }
-        }
-    }
-}
 
 log4j = log4j << {
 //    debug 'org.springframework.messaging'
