@@ -26,6 +26,7 @@
             client.connect({}, function() {
                 client.subscribe("/user/queue/hello", function(message) {
                     $("#helloDiv").text(message.body);
+                    message.ack();
                 });
             });
 
