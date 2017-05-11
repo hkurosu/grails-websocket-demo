@@ -25,3 +25,6 @@ To turn OFF SockJS,
 
 ## benckmark
 Websocket benchmarking tools written by Node.js.
+
+## reverse-proxy/nging
+A simple reverse proxy / load balancing configuration for NGINX.
